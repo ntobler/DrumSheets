@@ -16,7 +16,7 @@ import javax.swing.JMenuItem;
 
 public class DrumSheets {
 
-	private static DrumInterpreter drumInterpreter;
+	private static DrumLineDrawer drumLineDrawer;
 	private static TrackFrame trackFrame;
 	private static TrackFrame.Canvas canvas;
 	
@@ -28,13 +28,9 @@ public class DrumSheets {
 		
 		pageFormat = getStandardPageFormat();
 		
-		drumInterpreter = new DrumInterpreter(pageFormat);
-		
-		drumInterpreter.setDrumMap(getDrumMap());
-		
-		drumInterpreter.setTrack(1, 0);
-		
-		trackFrame = new TrackFrame(drumInterpreter);
+		drumLineDrawer = new DrumLineDrawer(pageFormat);
+		drumLineDrawer.setDrumMap(getDrumMap());
+		trackFrame = new TrackFrame(drumLineDrawer);
 		
 		trackFrame.setJMenuBar(setupMenuBar());
 		
@@ -46,6 +42,12 @@ public class DrumSheets {
 				
 				if (e.isControlDown()) {
 					trackFrame.addZoomValue(rotation);
+				}
+				else if (e.isShiftDown()) {
+					addScaleValue(rotation);
+				}
+				else if (e.isAltDown()) {
+					addXScaleValue(rotation);
 				}
 				else {
 					trackFrame.addScrollValue(-rotation);
@@ -111,6 +113,7 @@ public class DrumSheets {
 		double h = paper.getHeight();
 		double w = paper.getWidth();
 		paper.setImageableArea(0, 0, w, h);
+		//paper.setImageableArea(36, 36, w-72, h-72);
 		pageFormat.setPaper(paper);
 		
 		
@@ -164,7 +167,7 @@ public class DrumSheets {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				PrinterJob job = PrinterJob.getPrinterJob();
-				job.setPrintable(drumInterpreter, getPrinterPageFormat());
+				job.setPrintable(drumLineDrawer, getPrinterPageFormat());
 				
 				if(job.printDialog()) {
 					try {
@@ -188,15 +191,15 @@ public class DrumSheets {
 		buildOpenMenu(menu);
 		menuBar.add(menu);
 		
-		menu = new JMenu("Size");
-		menu.setMnemonic(KeyEvent.VK_S);
-		buildSizeMenu(menu);
-		menuBar.add(menu);
+//		menu = new JMenu("Size");
+//		menu.setMnemonic(KeyEvent.VK_S);
+//		buildSizeMenu(menu);
+//		menuBar.add(menu);
 		
-		menu = new JMenu("Measures per line");
-		menu.setMnemonic(KeyEvent.VK_M);
-		buildMeasuresPerLineMenu(menu);
-		menuBar.add(menu);
+//		menu = new JMenu("Measures per line");
+//		menu.setMnemonic(KeyEvent.VK_M);
+//		buildMeasuresPerLineMenu(menu);
+//		menuBar.add(menu);
 
 		menu = new JMenu("Drum map editor");
 		menu.setMnemonic(KeyEvent.VK_D);
@@ -261,15 +264,27 @@ public class DrumSheets {
 	
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					drumInterpreter.setFile(file);
+					drumLineDrawer.setFile(file);
 					update();
 				}
 				
 			});
 		}
+		
+		JMenuItem menuItem = new JMenuItem("Refresh");
+		menu.add(menuItem);
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				menu.removeAll();
+				buildOpenMenu(menu);
+			}
+			
+		});
 	}
 	
-	private static void buildSizeMenu(JMenu menu) {
+	/*private static void buildSizeMenu(JMenu menu) {
 	
 		int[] sizes = {50,60,70,80,90,100,110,120,130,140,150,200,300};
 		
@@ -282,34 +297,58 @@ public class DrumSheets {
 	
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					drumInterpreter.setSize(size);
+					drumLineDrawer.setSize(size);
 					update();
 				}
 				
 			});
 		}
-	}
+	}*/
 	
-	private static void buildMeasuresPerLineMenu(JMenu menu) {
+	/*private static void buildMeasuresPerLineMenu(JMenu menu) {
 		
-		int[] values = {1,2,3,4,5,6};
+		double[] values = {0.5,0.75,1,1.25,1.5,1.75,2,};
 		
-		for (int value : values) {
+		for (double value : values) {
 			
 			
-			JMenuItem menuItem = new JMenuItem(Integer.toString(value) + " per line");
+			JMenuItem menuItem = new JMenuItem(Double.toString(value) + " per line");
 			menu.add(menuItem);
 			menuItem.addActionListener(new ActionListener() {
 	
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					drumInterpreter.setMeasuresPerLine(value);
+					drumLineDrawer.setXFactor(value);
 					update();
 				}
 				
 			});
 		}
 	
+	}*/
+	
+	private static int scale = 1;
+	private static int xScale = 10;
+	
+	private static void addScaleValue(int value) {
+		
+		scale += value;
+		
+		double d = Math.pow(0.9, scale);
+		
+		drumLineDrawer.setSize(d);
 	}
+	
+	private static void addXScaleValue(int value) {
+		
+		xScale += value;
+		
+		if (xScale < 1) xScale = 1;
+		
+		double d = xScale * 0.1;
+		
+		drumLineDrawer.setXFactor(d);
+	}
+	
 
 }

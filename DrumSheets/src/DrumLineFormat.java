@@ -26,8 +26,8 @@ public class DrumLineFormat {
     public Font TITLE_FONT;
     public Font TITLE_MINOR_FONT;
     public Font TEMPO_FONT; 
+    public Font FRACTION_FONT;
     public Font KEY_FONT;
-    public Font PAGE_NUMBER_FONT;
     public Font LEGEND_FONT;
     
     public BasicStroke STROKE;
@@ -53,9 +53,9 @@ public class DrumLineFormat {
 		
 		TITLE_FONT = new Font("Times New Roman", Font.BOLD, (int) (24 * factor));
 		TITLE_MINOR_FONT = new Font("Times New Roman", Font.PLAIN, (int) (24 * factor));
-		TEMPO_FONT = new Font("Times New Roman", Font.ITALIC, (int) (12 * factor)); 
+		TEMPO_FONT = new Font("Times New Roman", Font.ITALIC, (int) (12 * factor));
+		FRACTION_FONT = new Font("Times New Roman", Font.BOLD, (int) (20 * factor));
 		KEY_FONT = new Font("Calibri", Font.PLAIN, (int) (12 * factor));
-		PAGE_NUMBER_FONT = new Font("Times New Roman", Font.PLAIN, (int) (24 * factor));
 		LEGEND_FONT = new Font("Calibri", Font.PLAIN, (int) (12 * factor));
 		
 		

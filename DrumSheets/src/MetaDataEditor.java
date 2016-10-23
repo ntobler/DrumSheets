@@ -15,11 +15,11 @@ public class MetaDataEditor {
 	}
 	
 	public String getTitle() {
-		return "Claim What's Yours";
+		return "";
 	}
 	
 	public String getAuthor() {
-		return "Nicolas Tobler";
+		return "";
 	}
 	
 }
